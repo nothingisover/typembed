@@ -39,7 +39,7 @@ class Typembed_Plugin implements Typecho_Plugin_Interface{
                 'http://player.youku.com/embed/{video_id}',
             ),
             'www.tudou.com' => array(
-                '#https?://(?:www\.)?tudou\.com/(?:programs/view|listplay/(?<list_id>[a-z0-9_=\-]+))/(?<video_id>[a-z0-9_=\-]+)#i', 
+                '#https?://(?:www\.)?tudou\.com/(?:programs/view|listplay/(?<list_id>[a-z0-9_=\-]+))/(?<video_id>[a-z0-9_=\-]+)/#i', 
                 'http://www.tudou.com/v/{video_id}/&resourceId=0_05_05_99&bid=05/v.swf',
                 'http://www.tudou.com/programs/view/html5embed.action?type=0&code={video_id}',
             ),
@@ -49,7 +49,7 @@ class Typembed_Plugin implements Typecho_Plugin_Interface{
                 'http://www.56.com/iframe/{video_id}',
             ),
             'v.qq.com' => array(
-                '#https?://v\.qq\.com/(?:cover/g/[a-z0-9_\.]+\?vid=(?<video_id>[a-z0-9_=\-]+)|(?:[a-z0-9/]+)/(?<video_id2>[a-z0-9_=\-]+))#i',
+                '#https?://v\.qq\.com/(?:[a-z0-9_\./]+\?vid=(?<video_id>[a-z0-9_=\-]+)|(?:[a-z0-9/]+)/(?<video_id2>[a-z0-9_=\-]+))#i',
                 'http://static.video.qq.com/TPout.swf?vid={video_id}',
                 'http://v.qq.com/iframe/player.html?vid={video_id}',
             ),
