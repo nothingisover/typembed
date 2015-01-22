@@ -5,7 +5,7 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
  * 
  * @package Typembed
  * @author Fengzi
- * @version 1.0.0
+ * @version 1.0.1
  * @dependence 13.12.12-*
  * @link http://www.fengziliu.com/typembed.html
  */
