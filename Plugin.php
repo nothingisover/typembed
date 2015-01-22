@@ -25,7 +25,7 @@ class Typembed_Plugin implements Typecho_Plugin_Interface{
     public static function parse($content, $widget, $lastResult){
         $content = empty($lastResult) ? $content : $lastResult;
         if ($widget instanceof Widget_Archive){
-            $content = preg_replace_callback('/<p>(?<video_url>(http|https):(\/\/|\\\\)((\w)+[.]){1,}([a-z]{1,3}|[0-9]{1,3})(((\/[\~]*|\\[\~]*)(\w)+)|[.](\w)+)*(((([?](\w)+){1}[=]*))*((\w)+){1}([\&amp;](\w)+[\=]((\w)+|-|%|\+|\#|(\w)+)*)*))<\/p>/si', array('Typembed_Plugin', 'parseCallback'), $content);
+            $content = preg_replace_callback('/<p>(?<video_url>(?:(http|https):\/\/)?[a-z0-9_\-\/.%]+)<\/p>/si', array('Typembed_Plugin', 'parseCallback'), $content);
         }
         return $content;
     }
@@ -39,7 +39,7 @@ class Typembed_Plugin implements Typecho_Plugin_Interface{
                 'http://player.youku.com/embed/{video_id}',
             ),
             'www.tudou.com' => array(
-                '#https?://(?:www\.)?tudou\.com/(?:programs/view|listplay/(?<list_id>[a-z0-9_=\-]+))/(?<video_id>[a-z0-9_=\-]+)/#i', 
+                '#https?://(?:www\.)?tudou\.com/(?:programs/view|listplay/(?<list_id>[a-z0-9_=\-]+))/(?<video_id>[a-z0-9_=\-]+)#i', 
                 'http://www.tudou.com/v/{video_id}/&resourceId=0_05_05_99&bid=05/v.swf',
                 'http://www.tudou.com/programs/view/html5embed.action?type=0&code={video_id}',
             ),
