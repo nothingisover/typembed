@@ -5,7 +5,7 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
  * 
  * @package Typembed
  * @author Fengzi
- * @version 1.0.1
+ * @version 1.0.2
  * @dependence 13.12.12-*
  * @link http://www.fengziliu.com/typembed.html
  */
@@ -25,7 +25,7 @@ class Typembed_Plugin implements Typecho_Plugin_Interface{
     public static function parse($content, $widget, $lastResult){
         $content = empty($lastResult) ? $content : $lastResult;
         if ($widget instanceof Widget_Archive){
-            $content = preg_replace_callback('/<p>(?<video_url>(?:(http|https):\/\/)?[a-z0-9_\-\/.%]+)<\/p>/si', array('Typembed_Plugin', 'parseCallback'), $content);
+            $content = preg_replace_callback('/<p>(?:(?:<a[^>]+>)?(?<video_url>(?:(http|https):\/\/)?[a-z0-9_\-\/.%]+)(?:<\/a>)?)<\/p>/si', array('Typembed_Plugin', 'parseCallback'), $content);
         }
         return $content;
     }
