@@ -5,7 +5,7 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
  * 
  * @package Typembed
  * @author Fengzi
- * @version 1.0.2
+ * @version 1.0.3
  * @dependence 13.12.12-*
  * @link http://www.fengziliu.com/typembed.html
  */
@@ -81,6 +81,9 @@ class Typembed_Plugin implements Typecho_Plugin_Interface{
         );
         $parse = parse_url($matches['video_url']);
         $site = $parse['host'];
+        if(!in_array($site, array_keys($providers))){
+            return '<p><a href="' . $matches['video_url'] . '">' . $matches['video_url'] . '</a></p>';
+        }
         preg_match_all($providers[$site][0], $matches['video_url'], $match);
         $id = $match['video_id'][0] == '' ? $match['video_id2'][0] : $match['video_id'][0];
         if(self::is_mobile()){
