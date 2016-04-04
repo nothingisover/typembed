@@ -2,17 +2,17 @@
 if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 /**
  * Typembed 视频播放插件
- * 
+ *
  * @package Typembed
  * @author Fengzi
- * @version 1.0.6
+ * @version 1.0.7
  * @dependence 13.12.12-*
  * @link http://www.fengziliu.com/typembed.html
  */
 class Typembed_Plugin implements Typecho_Plugin_Interface{
     /**
      * 激活插件方法,如果激活失败,直接抛出异常
-     * 
+     *
      * @access public
      * @return void
      * @throws Typecho_Plugin_Exception
@@ -21,7 +21,7 @@ class Typembed_Plugin implements Typecho_Plugin_Interface{
         Typecho_Plugin::factory('Widget_Abstract_Contents')->contentEx = array('Typembed_Plugin', 'parse');
         Typecho_Plugin::factory('Widget_Abstract_Contents')->excerptEx = array('Typembed_Plugin', 'parse');
     }
-    
+
     public static function parse($content, $widget, $lastResult){
         $content = empty($lastResult) ? $content : $lastResult;
         if ($widget instanceof Widget_Archive){
@@ -29,17 +29,17 @@ class Typembed_Plugin implements Typecho_Plugin_Interface{
         }
         return $content;
     }
-    
+
     public static function parseCallback($matches){
-        $no_html5 = array('www.letv.com', 'v.yinyuetai.com', 'v.ku6.com');
+        $no_html5 = array('www.le.com', 'www.letv.com', 'v.yinyuetai.com', 'v.ku6.com', 'www.mgtv.com');
         $providers = array(
             'v.youku.com' => array(
                 '#https?://v\.youku\.com/v_show/id_(?<video_id>[a-z0-9_=\-]+)#i',
-                'http://player.youku.com/player.php/sid/{video_id}/v.swf',
-                'http://player.youku.com/embed/{video_id}',
+                'http://player.youku.com/player.php/sid/{video_id}/partnerid/d0b1b77a17cded3b/v.swf',
+                'http://player.youku.com/embed/{video_id}?client_id=d0b1b77a17cded3b',
             ),
             'www.tudou.com' => array(
-                '#https?://(?:www\.)?tudou\.com/(?:programs/view|listplay/(?<list_id>[a-z0-9_=\-]+))/(?<video_id>[a-z0-9_=\-]+)#i', 
+                '#https?://(?:www\.)?tudou\.com/(?:programs/view|listplay/(?<list_id>[a-z0-9_=\-]+))/(?<video_id>[a-z0-9_=\-]+)#i',
                 'http://www.tudou.com/v/{video_id}/&resourceId=0_05_05_99&bid=05/v.swf',
                 'http://www.tudou.com/programs/view/html5embed.action?type=0&code={video_id}',
             ),
@@ -63,14 +63,19 @@ class Typembed_Plugin implements Typecho_Plugin_Interface{
                 'http://s.wasu.cn/portal/player/20141216/WsPlayer.swf?mode=3&vid={video_id}&auto=0&ad=4228',
                 'http://www.wasu.cn/Play/iframe/id/{video_id}',
             ),
-            'www.letv.com' => array(
-                '#https?://www\.letv\.com/ptv/vplay/(?<video_id>\d+)#i',
-                'http://i7.imgs.letv.com/player/swfPlayer.swf?id={video_id}&autoplay=0',
-                '',
-            ),
             'www.acfun.tv' => array(
                 '#https?://www\.acfun\.tv/v/ac(?<video_id>\d+)#i',
                 'http://static.acfun.mm111.net/player/ACFlashPlayer.out.swf?type=page&url=http://www.acfun.tv/v/ac{video_id}',
+                'http://cdn.aixifan.com/player/ACFlashPlayer.out.swf?type=page&url=http://www.acfun.tv/v/ac{video_id}',
+            ),
+            'www.le.com' => array(
+                '#https?://(?:[a-z0-9/]+\.)?(?:[le|letv])+\.com/ptv/vplay/(?<video_id>\d+)#i',
+                'http://i7.imgs.letv.com/player/swfPlayer.swf?id={video_id}&autoplay=0',
+                '',
+            ),
+            'www.letv.com' => array(
+                '#https?://(?:[a-z0-9/]+\.)?(?:[le|letv])+\.com/ptv/vplay/(?<video_id>\d+)#i',
+                'http://i7.imgs.letv.com/player/swfPlayer.swf?id={video_id}&autoplay=0',
                 '',
             ),
             'www.bilibili.com' => array(
@@ -86,6 +91,11 @@ class Typembed_Plugin implements Typecho_Plugin_Interface{
             'v.ku6.com' => array(
                 '#https?://v\.ku6\.com/show/(?<video_id>[a-z0-9\-_\.]+).html#i',
                 'http://player.ku6.com/refer/{video_id}/v.swf',
+                '',
+            ),
+            'www.mgtv.com' => array(
+                '#https?://www\.mgtv\.com/(?:[a-z0-9/]+)/(?<video_id>\d+)\.html#i',
+                'http://player.mgtv.com/mango-tv3-main/MangoTV_3.swf?play_type=1&video_id={video_id}',
                 '',
             ),
         );
@@ -116,10 +126,10 @@ class Typembed_Plugin implements Typecho_Plugin_Interface{
         }
         return '<div id="typembed">'.$html.'</div>';
     }
-    
+
     /**
      * 禁用插件方法,如果禁用失败,直接抛出异常
-     * 
+     *
      * @static
      * @access public
      * @return void
@@ -129,7 +139,7 @@ class Typembed_Plugin implements Typecho_Plugin_Interface{
 
     /**
      * 获取插件配置面板
-     * 
+     *
      * @access public
      * @param Typecho_Widget_Helper_Form $form 配置面板
      * @return void
@@ -145,19 +155,19 @@ class Typembed_Plugin implements Typecho_Plugin_Interface{
         $mobile_height = new Typecho_Widget_Helper_Form_Element_Text('mobile_height', NULL, '250', _t('移动设备播放器高度'));
         $form->addInput($mobile_height);
     }
-    
+
     /**
      * 个人用户的配置面板
-     * 
+     *
      * @access public
      * @param Typecho_Widget_Helper_Form $form
      * @return void
      */
     public static function personalConfig(Typecho_Widget_Helper_Form $form){}
-    
+
     /**
      * 移动设备识别
-     * 
+     *
      * @return boolean
      */
     private static function isMobile(){
