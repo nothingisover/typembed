@@ -38,6 +38,16 @@ class Typembed_Plugin implements Typecho_Plugin_Interface{
                 'http://player.youku.com/player.php/sid/{video_id}/partnerid/d0b1b77a17cded3b/v.swf',
                 'http://player.youku.com/embed/{video_id}?client_id=d0b1b77a17cded3b',
             ),
+            'www.youtube.com' => array(
+                '#https?://www\.youtube\.com/watch?v=(?<video_id>[a-z0-9_=\-]+)#i',
+                'http://www\.youtube\.com/v/{video_id}',
+                'http://www\.youtube\.com/embed/{video_id}',
+            ),
+            'http://www.dailymotion.com/' => array(
+                '#https?://www\.dailymotion\.com/video/(?<video_id>[a-z0-9_=\-]+)#i',
+                'http://www\.dailymotion\.com/swf/video/{video_id}',
+                'http://www\.dailymotion\.com/embed/video/{video_id}',
+            ),
             'www.tudou.com' => array(
                 '#https?://(?:www\.)?tudou\.com/(?:programs/view|listplay/(?<list_id>[a-z0-9_=\-]+))/(?<video_id>[a-z0-9_=\-]+)#i',
                 'http://www.tudou.com/v/{video_id}/&resourceId=0_05_05_99&bid=05/v.swf',

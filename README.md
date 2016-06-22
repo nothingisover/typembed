@@ -9,3 +9,6 @@ Typembed 是为 Typecho 添加对在线视频支持的一款插件（支持手�
 项目主页：http://www.fengziliu.com/typembed.html
 
 效果展示：http://www.fengziliu.com/da-hai.html
+
+
+Add Youtube and dailymotion website support.
