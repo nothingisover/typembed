@@ -162,7 +162,7 @@ class Typembed_Plugin implements Typecho_Plugin_Interface{
                 '<embed src="%1$s" allowFullScreen="true" quality="high" width="%2$s" height="%3$s" allowScriptAccess="always" type="application/x-shockwave-flash"></embed>',
                 $url, $width, $height);
         }
-        return '<div id="typembed" style="background: #333; overflow: hidden;">'.$html.'</div>';
+        return '<div id="typembed" style="background: #333; overflow: hidden; line-height: 0;">'.$html.'</div>';
     }
 
     /**
