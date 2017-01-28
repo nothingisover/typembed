@@ -5,11 +5,12 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
  *
  * @package Typembed
  * @author Fengzi
- * @version 1.0.8
+ * @version 1.0.9
  * @dependence 13.12.12-*
  * @link http://www.fengziliu.com/typembed.html
  */
 class Typembed_Plugin implements Typecho_Plugin_Interface{
+
     /**
      * 激活插件方法,如果激活失败,直接抛出异常
      *
@@ -31,7 +32,16 @@ class Typembed_Plugin implements Typecho_Plugin_Interface{
     }
 
     public static function parseCallback($matches){
-        $no_html5 = array('www.le.com', 'www.letv.com', 'v.yinyuetai.com', 'v.ku6.com', 'www.mgtv.com');
+        $no_html5 = array(
+            'www.le.com', 
+            'www.letv.com', 
+            'v.yinyuetai.com', 
+            'v.ku6.com', 
+            'www.mgtv.com',
+            'www.acfun.tv',
+            'www.acfun.cn',
+            'www.bilibili.com'
+        );
         $is_music = array('music.163.com');
         $providers = array(
             // video
@@ -65,15 +75,20 @@ class Typembed_Plugin implements Typecho_Plugin_Interface{
                 'http://s.wasu.cn/portal/player/20141216/WsPlayer.swf?mode=3&vid={video_id}&auto=0&ad=4228',
                 'http://www.wasu.cn/Play/iframe/id/{video_id}',
             ),
-            'www.acfun.tv' => array(
-                '#https?://www\.acfun\.tv/v/ac(?<video_id>\d+)#i',
-                'http://static.acfun.mm111.net/player/ACFlashPlayer.out.swf?type=page&url=http://www.acfun.tv/v/ac{video_id}',
-                'http://cdn.aixifan.com/player/ACFlashPlayer.out.swf?type=page&url=http://www.acfun.tv/v/ac{video_id}',
-            ),
             'www.bilibili.com' => array(
                 '#https?://www\.bilibili\.com/video/av(?<video_id>\d+)#i',
                 'http://static.hdslb.com/miniloader.swf?aid={video_id}&page=1',
-                'http://www.bilibili.com/html/html5player.html?aid={video_id}&page=1',
+                '',
+            ),
+            'www.acfun.cn' => array(
+                '#https?://www\.acfun\.cn/v/ac(?<video_id>\d+)#i',
+                'http://cdn.aixifan.com/player/ACFlashPlayer.out.swf?type=page&url=http://www.acfun.cn/v/ac{video_id}',
+                '',
+            ),
+            'www.acfun.tv' => array(
+                '#https?://www\.acfun\.tv/v/ac(?<video_id>\d+)#i',
+                'http://cdn.aixifan.com/player/ACFlashPlayer.out.swf?type=page&url=http://www.acfun.tv/v/ac{video_id}',
+                '',
             ),
             'www.le.com' => array(
                 '#https?://(?:[a-z0-9/]+\.)?(?:[le|letv])+\.com/ptv/vplay/(?<video_id>\d+)#i',
@@ -107,7 +122,8 @@ class Typembed_Plugin implements Typecho_Plugin_Interface{
                 'http://music.163.com/outchain/player?type=2&id={video_id}&auto=0&height=90',
             ),
         );
-        $parse = parse_url($matches['video_url']);
+        $video_url = $matches['video_url'];
+        $parse = parse_url($video_url);
         $site = $parse['host'];
         if(!in_array($site, array_keys($providers))){
             return '<p><a href="' . $matches['video_url'] . '">' . $matches['video_url'] . '</a></p>';
@@ -125,18 +141,28 @@ class Typembed_Plugin implements Typecho_Plugin_Interface{
             $height = '110px';
             $_SERVER['HTTP_USER_AGENT'] = 'iphone';
         }
-        if(self::isMobile() && !in_array($site, $no_html5)){
-            $url = str_replace('{video_id}', $id, $providers[$site][2]);
-            $html = sprintf(
-                '<iframe src="%1$s" width="%2$s" height="%3$s" frameborder="0" allowfullscreen="true"></iframe>',
-                $url, $width, $height);
+        if(self::isMobile()){
+            if(in_array($site, $no_html5)){
+                $html = sprintf(
+                    '<div style="width: %2$s; height: %3$spx; overflow: hidden; position: relative;">
+                        <a href="%1$s" title="点击开始播放" target="_blank" style="display: block; margin: 100px auto 0; width: 50px; height: 50px; text-decoration: none; border: 0; position: absolute; left: 50%%; top: 50%%; margin: -25px;">
+                            <div style="width: 0; height: 0; border-top: 25px solid transparent; border-left: 50px solid #FFF; border-bottom: 25px solid transparent;"></div>
+                        </a>
+                    </div>',
+                    $video_url, $width, $height);
+            }else{
+                $url = str_replace('{video_id}', $id, $providers[$site][2]);
+                $html = sprintf(
+                    '<iframe src="%1$s" width="%2$s" height="%3$s" frameborder="0" allowfullscreen="true"></iframe>',
+                    $url, $width, $height);
+            }
         }else{
             $url = str_replace('{video_id}', $id, $providers[$site][1]);
             $html = sprintf(
                 '<embed src="%1$s" allowFullScreen="true" quality="high" width="%2$s" height="%3$s" allowScriptAccess="always" type="application/x-shockwave-flash"></embed>',
                 $url, $width, $height);
         }
-        return '<div id="typembed">'.$html.'</div>';
+        return '<div id="typembed" style="background: #333; overflow: hidden;">'.$html.'</div>';
     }
 
     /**
@@ -157,7 +183,7 @@ class Typembed_Plugin implements Typecho_Plugin_Interface{
      * @return void
      */
     public static function config(Typecho_Widget_Helper_Form $form){
-        //$options = Helper::options();
+        $typembed_code = Typecho_Widget::widget('Widget_Options')->plugin('Typembed')->typembed_code;
         $width = new Typecho_Widget_Helper_Form_Element_Text('width', NULL, '100%', _t('播放器宽度'));
         $form->addInput($width);
         $height = new Typecho_Widget_Helper_Form_Element_Text('height', NULL, '500', _t('播放器高度'));
@@ -166,6 +192,21 @@ class Typembed_Plugin implements Typecho_Plugin_Interface{
         $form->addInput($mobile_width);
         $mobile_height = new Typecho_Widget_Helper_Form_Element_Text('mobile_height', NULL, '250', _t('移动设备播放器高度'));
         $form->addInput($mobile_height);
+        if(strtolower(md5($typembed_code)) == 'c4f1f5e51b0d89c2f5f20e12282d667f'){
+            $typembed_code_text = new Typecho_Widget_Helper_Form_Element_Hidden('typembed_code', NULL, '', _t('高级功能激活码'));
+            $form->addInput($typembed_code_text);
+            $jump_play = new Typecho_Widget_Helper_Form_Element_Radio('jump_play', array(
+                1   =>  _t('启用'),
+                0   =>  _t('关闭')
+            ), 0, _t('跳转播放'), _t('手机端不支持H5播放的视频，将跳转到源网站播放'));
+            $form->addInput($jump_play->addRule('enum', _t('必须选择一个模式'), array(0, 1)));
+        }else{
+            $typembed_code_text = new Typecho_Widget_Helper_Form_Element_Text('typembed_code', NULL, '', _t('高级功能激活码'), _t('升级到<a href="http://www.fengziliu.com/typembed.html" target="_blank">最新版本</a>，填入激活码保存后可开启高级功能。<br />
+激活码关注微信公众号“<a href="http://www.rifuyiri.net/wp-content/uploads/2014/08/972e6fb0794d359.jpg" target="_blank">ri-fu-yi-ri</a>”回复“Smartideo Code”即可获得～'));
+            $form->addInput($typembed_code_text);
+            $jump_play = new Typecho_Widget_Helper_Form_Element_Hidden('jump_play', NULL, 0);
+            $form->addInput($jump_play->addRule('enum', _t('必须选择一个模式'), array(0, 1)));
+        }
     }
 
     /**
