@@ -5,7 +5,7 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
  *
  * @package Typembed
  * @author Fengzi
- * @version 1.0.7
+ * @version 1.0.8
  * @dependence 13.12.12-*
  * @link http://www.fengziliu.com/typembed.html
  */
@@ -25,14 +25,16 @@ class Typembed_Plugin implements Typecho_Plugin_Interface{
     public static function parse($content, $widget, $lastResult){
         $content = empty($lastResult) ? $content : $lastResult;
         if ($widget instanceof Widget_Archive){
-            $content = preg_replace_callback('/<p>(?:(?:<a[^>]+>)?(?<video_url>(?:(http|https):\/\/)+[a-z0-9_\-\/.%]+)(?:<\/a>)?)<\/p>/si', array('Typembed_Plugin', 'parseCallback'), $content);
+            $content = preg_replace_callback('/<p>(?:(?:<a[^>]+>)?(?<video_url>(?:(http|https):\/\/)+[a-z0-9_\-\/\.\?%#=]+)(?:<\/a>)?)<\/p>/si', array('Typembed_Plugin', 'parseCallback'), $content);
         }
         return $content;
     }
 
     public static function parseCallback($matches){
         $no_html5 = array('www.le.com', 'www.letv.com', 'v.yinyuetai.com', 'v.ku6.com', 'www.mgtv.com');
+        $is_music = array('music.163.com');
         $providers = array(
+            // video
             'v.youku.com' => array(
                 '#https?://v\.youku\.com/v_show/id_(?<video_id>[a-z0-9_=\-]+)#i',
                 'http://player.youku.com/player.php/sid/{video_id}/partnerid/d0b1b77a17cded3b/v.swf',
@@ -68,6 +70,11 @@ class Typembed_Plugin implements Typecho_Plugin_Interface{
                 'http://static.acfun.mm111.net/player/ACFlashPlayer.out.swf?type=page&url=http://www.acfun.tv/v/ac{video_id}',
                 'http://cdn.aixifan.com/player/ACFlashPlayer.out.swf?type=page&url=http://www.acfun.tv/v/ac{video_id}',
             ),
+            'www.bilibili.com' => array(
+                '#https?://www\.bilibili\.com/video/av(?<video_id>\d+)#i',
+                'http://static.hdslb.com/miniloader.swf?aid={video_id}&page=1',
+                'http://www.bilibili.com/html/html5player.html?aid={video_id}&page=1',
+            ),
             'www.le.com' => array(
                 '#https?://(?:[a-z0-9/]+\.)?(?:[le|letv])+\.com/ptv/vplay/(?<video_id>\d+)#i',
                 'http://i7.imgs.letv.com/player/swfPlayer.swf?id={video_id}&autoplay=0',
@@ -76,11 +83,6 @@ class Typembed_Plugin implements Typecho_Plugin_Interface{
             'www.letv.com' => array(
                 '#https?://(?:[a-z0-9/]+\.)?(?:[le|letv])+\.com/ptv/vplay/(?<video_id>\d+)#i',
                 'http://i7.imgs.letv.com/player/swfPlayer.swf?id={video_id}&autoplay=0',
-                '',
-            ),
-            'www.bilibili.com' => array(
-                '#https?://www\.bilibili\.com/video/av(?<video_id>\d+)#i',
-                'http://static.hdslb.com/miniloader.swf?aid={video_id}&page=1',
                 '',
             ),
             'v.yinyuetai.com' => array(
@@ -98,6 +100,12 @@ class Typembed_Plugin implements Typecho_Plugin_Interface{
                 'http://player.mgtv.com/mango-tv3-main/MangoTV_3.swf?play_type=1&video_id={video_id}',
                 '',
             ),
+            // music
+            'music.163.com' => array(
+                '#https?://music\.163\.com/\#/song\?id=(?<video_id>\d+)#i',
+                '',
+                'http://music.163.com/outchain/player?type=2&id={video_id}&auto=0&height=90',
+            ),
         );
         $parse = parse_url($matches['video_url']);
         $site = $parse['host'];
@@ -112,6 +120,10 @@ class Typembed_Plugin implements Typecho_Plugin_Interface{
         }else{
             $width = Typecho_Widget::widget('Widget_Options')->plugin('Typembed')->width;
             $height = Typecho_Widget::widget('Widget_Options')->plugin('Typembed')->height;
+        }
+        if(in_array($site, $is_music)){
+            $height = '110px';
+            $_SERVER['HTTP_USER_AGENT'] = 'iphone';
         }
         if(self::isMobile() && !in_array($site, $no_html5)){
             $url = str_replace('{video_id}', $id, $providers[$site][2]);
