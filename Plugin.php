@@ -192,7 +192,7 @@ class Typembed_Plugin implements Typecho_Plugin_Interface{
         $form->addInput($mobile_width);
         $mobile_height = new Typecho_Widget_Helper_Form_Element_Text('mobile_height', NULL, '250', _t('移动设备播放器高度'));
         $form->addInput($mobile_height);
-        if(strtolower(md5($typembed_code)) == 'c4f1f5e51b0d89c2f5f20e12282d667f'){
+        if(in_array(strtolower(md5($typembed_code)), array('dc9beb84559e75df480b70c3f31ff6cb', '6a78fa2523ca58180ede636aa948bc58', '90b82edf68dcb27b4014ed6b751bb2e5', 'cff968058df7dc08c5c54050ee0c3829', '92420638bb657827490783196a0d263c'))){
             $typembed_code_text = new Typecho_Widget_Helper_Form_Element_Hidden('typembed_code', NULL, '', _t('高级功能激活码'));
             $form->addInput($typembed_code_text);
             $jump_play = new Typecho_Widget_Helper_Form_Element_Radio('jump_play', array(
