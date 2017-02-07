@@ -33,10 +33,10 @@ class Typembed_Plugin implements Typecho_Plugin_Interface{
 
     public static function parseCallback($matches){
         $no_html5 = array(
-            'www.le.com', 
-            'www.letv.com', 
-            'v.yinyuetai.com', 
-            'v.ku6.com', 
+            'www.le.com',
+            'www.letv.com',
+            'v.yinyuetai.com',
+            'v.ku6.com',
             'www.mgtv.com',
             'www.acfun.tv',
             'www.acfun.cn',
@@ -202,7 +202,7 @@ class Typembed_Plugin implements Typecho_Plugin_Interface{
             $form->addInput($jump_play->addRule('enum', _t('必须选择一个模式'), array(0, 1)));
         }else{
             $typembed_code_text = new Typecho_Widget_Helper_Form_Element_Text('typembed_code', NULL, '', _t('高级功能激活码'), _t('升级到<a href="http://www.fengziliu.com/typembed.html" target="_blank">最新版本</a>，填入激活码保存后可开启高级功能。<br />
-激活码关注微信公众号“<a href="http://www.rifuyiri.net/wp-content/uploads/2014/08/972e6fb0794d359.jpg" target="_blank">ri-fu-yi-ri</a>”回复“Smartideo Code”即可获得～'));
+激活码关注微信公众号“<a href="http://www.rifuyiri.net/wp-content/uploads/2014/08/972e6fb0794d359.jpg" target="_blank">ri-fu-yi-ri</a>”回复“Typembed Code”即可获得～'));
             $form->addInput($typembed_code_text);
             $jump_play = new Typecho_Widget_Helper_Form_Element_Hidden('jump_play', NULL, 0);
             $form->addInput($jump_play->addRule('enum', _t('必须选择一个模式'), array(0, 1)));
