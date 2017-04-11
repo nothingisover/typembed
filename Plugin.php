@@ -5,7 +5,7 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
  *
  * @package Typembed
  * @author Fengzi
- * @version 1.1.0
+ * @version 1.1.1
  * @dependence 13.12.12-*
  * @link http://www.fengziliu.com/typembed.html
  */
@@ -131,11 +131,21 @@ class Typembed_Plugin implements Typecho_Plugin_Interface{
         preg_match_all($providers[$site][0], $matches['video_url'], $match);
         $id = $match['video_id'][0] == '' ? $match['video_id2'][0] : $match['video_id'][0];
         if(self::isMobile()){
-            $width = Typecho_Widget::widget('Widget_Options')->plugin('Typembed')->mobile_width;
-            $height = Typecho_Widget::widget('Widget_Options')->plugin('Typembed')->mobile_height;
+            try{
+                $width = Typecho_Widget::widget('Widget_Options')->plugin('Typembed')->mobile_width;
+                $height = Typecho_Widget::widget('Widget_Options')->plugin('Typembed')->mobile_height;
+            }catch(Typecho_Plugin_Exception $e){
+                $width = '100%';
+                $height = '500';
+            }
         }else{
-            $width = Typecho_Widget::widget('Widget_Options')->plugin('Typembed')->width;
-            $height = Typecho_Widget::widget('Widget_Options')->plugin('Typembed')->height;
+            try{
+                $width = Typecho_Widget::widget('Widget_Options')->plugin('Typembed')->width;
+                $height = Typecho_Widget::widget('Widget_Options')->plugin('Typembed')->height;
+            }catch(Typecho_Plugin_Exception $e){
+                $width = '100%';
+                $height = '250';
+            }
         }
         if(in_array($site, $is_music)){
             $height = '110px';
@@ -183,7 +193,11 @@ class Typembed_Plugin implements Typecho_Plugin_Interface{
      * @return void
      */
     public static function config(Typecho_Widget_Helper_Form $form){
-        $typembed_code = Typecho_Widget::widget('Widget_Options')->plugin('Typembed')->typembed_code;
+        try{
+            $typembed_code = Typecho_Widget::widget('Widget_Options')->plugin('Typembed')->typembed_code;
+        }catch(Typecho_Plugin_Exception $e){
+            $typembed_code = '';
+        }
         $width = new Typecho_Widget_Helper_Form_Element_Text('width', NULL, '100%', _t('播放器宽度'));
         $form->addInput($width);
         $height = new Typecho_Widget_Helper_Form_Element_Text('height', NULL, '500', _t('播放器高度'));
