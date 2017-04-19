@@ -9,3 +9,7 @@ Typembed 是为 Typecho 添加对在线视频支持的一款插件（支持手�
 项目主页：http://www.fengziliu.com/typembed.html
 
 效果展示：http://www.fengziliu.com/da-hai.html
+
+关注微信公众号，获得更新提醒
+
+![关注微信公众号，获得更新提醒](http://www.rifuyiri.net/wp-content/uploads/2014/08/972e6fb0794d359.jpg)
