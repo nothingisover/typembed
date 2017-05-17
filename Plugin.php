@@ -80,8 +80,8 @@ class Typembed_Plugin implements Typecho_Plugin_Interface{
             ),
             'www.bilibili.com' => array(
                 '#https?://www\.bilibili\.com/video/av(?<video_id>\d+)#i',
-                'http://static.hdslb.com/miniloader.swf?aid={video_id}&page=1',
-                '',
+                '//static.hdslb.com/miniloader.swf?aid={video_id}&page=1',
+                '//www.bilibili.com/blackboard/player.html?aid={video_id}&page=1',
             ),
             'v.yinyuetai.com' => array(
                 '#https?://v\.yinyuetai\.com/video/(?<video_id>\d+)#i',
