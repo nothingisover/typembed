@@ -5,7 +5,7 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
  *
  * @package Typembed
  * @author Fengzi
- * @version 1.1.1
+ * @version 1.2.0
  * @dependence 13.12.12-*
  * @link http://www.fengziliu.com/typembed.html
  */
@@ -50,11 +50,6 @@ class Typembed_Plugin implements Typecho_Plugin_Interface{
                 'http://player.youku.com/player.php/sid/{video_id}/partnerid/d0b1b77a17cded3b/v.swf',
                 'http://player.youku.com/embed/{video_id}?client_id=d0b1b77a17cded3b',
             ),
-            'www.tudou.com' => array(
-                '#https?://(?:www\.)?tudou\.com/(?:programs/view|listplay/(?<list_id>[a-z0-9_=\-]+))/(?<video_id>[a-z0-9_=\-]+)#i',
-                'http://www.tudou.com/v/{video_id}/&resourceId=0_05_05_99&bid=05/v.swf',
-                'http://www.tudou.com/programs/view/html5embed.action?type=0&code={video_id}',
-            ),
             'www.56.com' => array(
                 '#https?://(?:www\.)?56\.com/[a-z0-9]+/(?:play_album\-aid\-[0-9]+_vid\-(?<video_id>[a-z0-9_=\-]+)|v_(?<video_id2>[a-z0-9_=\-]+))#i',
                 'http://player.56.com/v_{video_id}.swf',
@@ -74,6 +69,11 @@ class Typembed_Plugin implements Typecho_Plugin_Interface{
                 '#https?://www\.wasu\.cn/play/show/id/(?<video_id>\d+)#i',
                 'http://s.wasu.cn/portal/player/20141216/WsPlayer.swf?mode=3&vid={video_id}&auto=0&ad=4228',
                 'http://www.wasu.cn/Play/iframe/id/{video_id}',
+            ),
+            'www.youtube.com' => array(
+                '#https?://www\.youtube\.com/watch?v=(?<video_id>[a-z0-9_=\-]+)#i', 
+                'https://www.youtube.com/embed/{video_id}', 
+                'https://www.youtube.com/watch?v={video_id}', 
             ),
             'www.bilibili.com' => array(
                 '#https?://www\.bilibili\.com/video/av(?<video_id>\d+)#i',
