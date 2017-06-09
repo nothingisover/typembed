@@ -71,9 +71,9 @@ class Typembed_Plugin implements Typecho_Plugin_Interface{
                 'http://www.wasu.cn/Play/iframe/id/{video_id}',
             ),
             'www.youtube.com' => array(
-                '#https?://www\.youtube\.com/watch?v=(?<video_id>[a-z0-9_=\-]+)#i', 
+                '#https?://www\.youtube\.com/watch\?v=(?<video_id>[a-z0-9_=\-]+)#i', 
                 'https://www.youtube.com/embed/{video_id}', 
-                'https://www.youtube.com/watch?v={video_id}', 
+                'https://www.youtube.com/embed/{video_id}?ecver=1', 
             ),
             'www.bilibili.com' => array(
                 '#https?://www\.bilibili\.com/video/av(?<video_id>\d+)#i',
@@ -151,7 +151,7 @@ class Typembed_Plugin implements Typecho_Plugin_Interface{
             $height = '110px';
             $_SERVER['HTTP_USER_AGENT'] = 'iphone';
         }
-        if(self::isMobile()){
+        if(self::isMobile() || $site == 'www.youtube.com'){
             if(in_array($site, $no_html5)){
                 $html = sprintf(
                     '<div style="width: %2$s; height: %3$spx; overflow: hidden; position: relative;">
