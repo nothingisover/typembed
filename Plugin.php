@@ -1,11 +1,11 @@
-<?php
+﻿<?php
 if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 /**
  * Typembed 视频播放插件
  *
  * @package Typembed
  * @author Fengzi
- * @version 1.1.1
+ * @version 1.2.0
  * @dependence 13.12.12-*
  * @link http://www.fengziliu.com/typembed.html
  */
@@ -50,17 +50,7 @@ class Typembed_Plugin implements Typecho_Plugin_Interface{
                 'http://player.youku.com/player.php/sid/{video_id}/partnerid/d0b1b77a17cded3b/v.swf',
                 'http://player.youku.com/embed/{video_id}?client_id=d0b1b77a17cded3b',
             ),
-            'www.youtube.com' => array(
-                '#https?://www\.youtube\.com/watch\?v=(?<video_id>[a-z0-9_=\-]+)#i',
-                'https://www.youtube.com/v/{video_id}',
-                'https://www.youtube.com/embed/{video_id}',
-            ),
-            'youtu.be' => array(
-                '#https?://youtu\.be/(?<video_id>[a-z0-9_=\-]+)#i',
-                'https://www.youtube.com/v/{video_id}',
-                'https://www.youtube.com/embed/{video_id}',
-            ),
-            'http://www.dailymotion.com/' => array(
+            'www.dailymotion.com' => array(
                 '#https?://www\.dailymotion\.com/video/(?<video_id>[a-z0-9_=\-]+)#i',
                 'http://www.dailymotion.com/swf/video/{video_id}',
                 'http://www.dailymotion.com/embed/video/{video_id}',
@@ -89,6 +79,16 @@ class Typembed_Plugin implements Typecho_Plugin_Interface{
                 '#https?://www\.wasu\.cn/play/show/id/(?<video_id>\d+)#i',
                 'http://s.wasu.cn/portal/player/20141216/WsPlayer.swf?mode=3&vid={video_id}&auto=0&ad=4228',
                 'http://www.wasu.cn/Play/iframe/id/{video_id}',
+            ),
+            'www.youtube.com' => array(
+                '#https?://www\.youtube\.com/watch\?v=(?<video_id>[a-z0-9_=\-]+)#i',
+                'https://www.youtube.com/v/{video_id}',
+                'https://www.youtube.com/embed/{video_id}',
+            ),
+            'youtu.be' => array(
+                '#https?://youtu\.be/(?<video_id>[a-z0-9_=\-]+)#i',
+                'https://www.youtube.com/v/{video_id}',
+                'https://www.youtube.com/embed/{video_id}',
             ),
             'www.bilibili.com' => array(
                 '#https?://www\.bilibili\.com/video/av(?<video_id>\d+)#i',

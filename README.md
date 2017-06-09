@@ -1,4 +1,4 @@
-# typembed
+﻿# typembed
 
 Typembed 是为 Typecho 添加对在线视频支持的一款插件（支持手机、平板等设备HTML5播放）。目前支持优酷、搜狐视频、土豆、56、腾讯视频、新浪视频、酷6、华数、乐视 等网站。
 
@@ -10,5 +10,6 @@ Typembed 是为 Typecho 添加对在线视频支持的一款插件（支持手�
 
 效果展示：http://www.fengziliu.com/da-hai.html
 
+关注微信公众号，获得更新提醒
 
-Add Youtube and dailymotion website support.
+![关注微信公众号，获得更新提醒](http://www.rifuyiri.net/wp-content/uploads/2014/08/972e6fb0794d359.jpg)
