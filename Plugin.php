@@ -115,6 +115,11 @@ class Typembed_Plugin implements Typecho_Plugin_Interface{
                 'http://i7.imgs.letv.com/player/swfPlayer.swf?id={video_id}&autoplay=0',
                 '',
             ),
+            'www.bilibili.com' => array(
+                '#https?://www\.bilibili\.com/video/av(?<video_id>\d+)#i',
+                '//static.hdslb.com/miniloader.swf?aid={video_id}&page=1',
+                '//www.bilibili.com/blackboard/player.html?aid={video_id}&page=1',
+            ),
             'v.yinyuetai.com' => array(
                 '#https?://v\.yinyuetai\.com/video/(?<video_id>\d+)#i',
                 'http://player.yinyuetai.com/video/player/{video_id}/v_0.swf',
