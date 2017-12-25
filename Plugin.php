@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 /**
  * Typembed 视频播放插件
@@ -50,6 +50,16 @@ class Typembed_Plugin implements Typecho_Plugin_Interface{
                 'http://player.youku.com/player.php/sid/{video_id}/partnerid/d0b1b77a17cded3b/v.swf',
                 'http://player.youku.com/embed/{video_id}?client_id=d0b1b77a17cded3b',
             ),
+            'www.dailymotion.com' => array(
+                '#https?://www\.dailymotion\.com/video/(?<video_id>[a-z0-9_=\-]+)#i',
+                'http://www.dailymotion.com/swf/video/{video_id}',
+                'http://www.dailymotion.com/embed/video/{video_id}',
+            ),
+            'www.tudou.com' => array(
+                '#https?://(?:www\.)?tudou\.com/(?:programs/view|listplay/(?<list_id>[a-z0-9_=\-]+))/(?<video_id>[a-z0-9_=\-]+)#i',
+                'http://www.tudou.com/v/{video_id}/&resourceId=0_05_05_99&bid=05/v.swf',
+                'http://www.tudou.com/programs/view/html5embed.action?type=0&code={video_id}',
+            ),
             'www.56.com' => array(
                 '#https?://(?:www\.)?56\.com/[a-z0-9]+/(?:play_album\-aid\-[0-9]+_vid\-(?<video_id>[a-z0-9_=\-]+)|v_(?<video_id2>[a-z0-9_=\-]+))#i',
                 'http://player.56.com/v_{video_id}.swf',
@@ -71,9 +81,14 @@ class Typembed_Plugin implements Typecho_Plugin_Interface{
                 'http://www.wasu.cn/Play/iframe/id/{video_id}',
             ),
             'www.youtube.com' => array(
-                '#https?://www\.youtube\.com/watch\?v=(?<video_id>[a-z0-9_=\-]+)#i', 
-                'https://www.youtube.com/embed/{video_id}', 
-                'https://www.youtube.com/embed/{video_id}?ecver=1', 
+                '#https?://www\.youtube\.com/watch\?v=(?<video_id>[a-z0-9_=\-]+)#i',
+                'https://www.youtube.com/v/{video_id}',
+                'https://www.youtube.com/embed/{video_id}',
+            ),
+            'youtu.be' => array(
+                '#https?://youtu\.be/(?<video_id>[a-z0-9_=\-]+)#i',
+                'https://www.youtube.com/v/{video_id}',
+                'https://www.youtube.com/embed/{video_id}',
             ),
             'www.bilibili.com' => array(
                 '#https?://www\.bilibili\.com/video/av(?<video_id>\d+)#i',
@@ -151,7 +166,7 @@ class Typembed_Plugin implements Typecho_Plugin_Interface{
             $height = '110px';
             $_SERVER['HTTP_USER_AGENT'] = 'iphone';
         }
-        if(self::isMobile() || $site == 'www.youtube.com'){
+        if(self::isMobile()){
             if(in_array($site, $no_html5)){
                 $html = sprintf(
                     '<div style="width: %2$s; height: %3$spx; overflow: hidden; position: relative;">
