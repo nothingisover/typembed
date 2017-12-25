@@ -5,7 +5,7 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
  *
  * @package Typembed
  * @author Fengzi
- * @version 1.2.0
+ * @version 1.3.0
  * @dependence 13.12.12-*
  * @link http://www.fengziliu.com/typembed.html
  */
@@ -50,21 +50,6 @@ class Typembed_Plugin implements Typecho_Plugin_Interface{
                 'http://player.youku.com/player.php/sid/{video_id}/partnerid/d0b1b77a17cded3b/v.swf',
                 'http://player.youku.com/embed/{video_id}?client_id=d0b1b77a17cded3b',
             ),
-            'www.dailymotion.com' => array(
-                '#https?://www\.dailymotion\.com/video/(?<video_id>[a-z0-9_=\-]+)#i',
-                'http://www.dailymotion.com/swf/video/{video_id}',
-                'http://www.dailymotion.com/embed/video/{video_id}',
-            ),
-            'www.tudou.com' => array(
-                '#https?://(?:www\.)?tudou\.com/(?:programs/view|listplay/(?<list_id>[a-z0-9_=\-]+))/(?<video_id>[a-z0-9_=\-]+)#i',
-                'http://www.tudou.com/v/{video_id}/&resourceId=0_05_05_99&bid=05/v.swf',
-                'http://www.tudou.com/programs/view/html5embed.action?type=0&code={video_id}',
-            ),
-            'www.56.com' => array(
-                '#https?://(?:www\.)?56\.com/[a-z0-9]+/(?:play_album\-aid\-[0-9]+_vid\-(?<video_id>[a-z0-9_=\-]+)|v_(?<video_id2>[a-z0-9_=\-]+))#i',
-                'http://player.56.com/v_{video_id}.swf',
-                'http://www.56.com/iframe/{video_id}',
-            ),
             'v.qq.com' => array(
                 '#https?://v\.qq\.com/(?:[a-z0-9_\./]+\?vid=(?<video_id>[a-z0-9_=\-]+)|(?:[a-z0-9/]+)/(?<video_id2>[a-z0-9_=\-]+))#i',
                 'http://static.video.qq.com/TPout.swf?vid={video_id}',
@@ -92,8 +77,13 @@ class Typembed_Plugin implements Typecho_Plugin_Interface{
             ),
             'www.bilibili.com' => array(
                 '#https?://www\.bilibili\.com/video/av(?<video_id>\d+)#i',
-                'http://static.hdslb.com/miniloader.swf?aid={video_id}&page=1',
-                '',
+                '//static.hdslb.com/miniloader.swf?aid={video_id}&page=1',
+                '//www.bilibili.com/html/player.html?aid={video_id}&page=1',
+            ),
+            'www.dailymotion.com' => array(
+                '#https?://www\.dailymotion\.com/video/(?<video_id>[a-z0-9_=\-]+)#i',
+                'http://www.dailymotion.com/swf/video/{video_id}',
+                'http://www.dailymotion.com/embed/video/{video_id}',
             ),
             'www.acfun.cn' => array(
                 '#https?://www\.acfun\.cn/v/ac(?<video_id>\d+)#i',
@@ -115,11 +105,6 @@ class Typembed_Plugin implements Typecho_Plugin_Interface{
                 'http://i7.imgs.letv.com/player/swfPlayer.swf?id={video_id}&autoplay=0',
                 '',
             ),
-            'www.bilibili.com' => array(
-                '#https?://www\.bilibili\.com/video/av(?<video_id>\d+)#i',
-                '//static.hdslb.com/miniloader.swf?aid={video_id}&page=1',
-                '//www.bilibili.com/blackboard/player.html?aid={video_id}&page=1',
-            ),
             'v.yinyuetai.com' => array(
                 '#https?://v\.yinyuetai\.com/video/(?<video_id>\d+)#i',
                 'http://player.yinyuetai.com/video/player/{video_id}/v_0.swf',
@@ -134,6 +119,11 @@ class Typembed_Plugin implements Typecho_Plugin_Interface{
                 '#https?://www\.mgtv\.com/(?:[a-z0-9/]+)/(?<video_id>\d+)\.html#i',
                 'http://player.mgtv.com/mango-tv3-main/MangoTV_3.swf?play_type=1&video_id={video_id}',
                 '',
+            ),
+            'www.56.com' => array(
+                '#https?://(?:www\.)?56\.com/[a-z0-9]+/(?:play_album\-aid\-[0-9]+_vid\-(?<video_id>[a-z0-9_=\-]+)|v_(?<video_id2>[a-z0-9_=\-]+))#i',
+                'http://player.56.com/v_{video_id}.swf',
+                'http://www.56.com/iframe/{video_id}',
             ),
             // music
             'music.163.com' => array(
