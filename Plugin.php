@@ -5,9 +5,9 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
  *
  * @package Typembed
  * @author Fengzi
- * @version 1.3.0
+ * @version 1.4.0
  * @dependence 13.12.12-*
- * @link http://www.fengziliu.com/typembed.html
+ * @link https://7yper.com/3636
  */
 class Typembed_Plugin implements Typecho_Plugin_Interface{
 
@@ -32,39 +32,16 @@ class Typembed_Plugin implements Typecho_Plugin_Interface{
     }
 
     public static function parseCallback($matches){
-        $no_html5 = array(
-            'www.le.com',
-            'www.letv.com',
-            'v.yinyuetai.com',
-            'v.ku6.com',
-            'www.mgtv.com',
-            'www.acfun.tv',
-            'www.acfun.cn',
-            'www.bilibili.com'
-        );
         $is_music = array('music.163.com');
+
+        try {
+            $jump_play = Typecho_Widget::widget('Widget_Options')->plugin('Typembed')->jump_play;
+        } catch(Typecho_Plugin_Exception $e) {
+            $jump_play = 0;
+        }
+
         $providers = array(
             // video
-            'v.youku.com' => array(
-                '#https?://v\.youku\.com/v_show/id_(?<video_id>[a-z0-9_=\-]+)#i',
-                'http://player.youku.com/player.php/sid/{video_id}/partnerid/d0b1b77a17cded3b/v.swf',
-                'http://player.youku.com/embed/{video_id}?client_id=d0b1b77a17cded3b',
-            ),
-            'v.qq.com' => array(
-                '#https?://v\.qq\.com/(?:[a-z0-9_\./]+\?vid=(?<video_id>[a-z0-9_=\-]+)|(?:[a-z0-9/]+)/(?<video_id2>[a-z0-9_=\-]+))#i',
-                'http://static.video.qq.com/TPout.swf?vid={video_id}',
-                'http://v.qq.com/iframe/player.html?vid={video_id}',
-            ),
-            'my.tv.sohu.com' => array(
-                '#https?://my\.tv\.sohu\.com/us/(?:\d+)/(?<video_id>\d+)#i',
-                'http://share.vrs.sohu.com/my/v.swf&topBar=1&id={video_id}&autoplay=false&xuid=&from=page',
-                'http://tv.sohu.com/upload/static/share/share_play.html#{video_id}_0_0_9001_0',
-            ),
-            'www.wasu.cn' => array(
-                '#https?://www\.wasu\.cn/play/show/id/(?<video_id>\d+)#i',
-                'http://s.wasu.cn/portal/player/20141216/WsPlayer.swf?mode=3&vid={video_id}&auto=0&ad=4228',
-                'http://www.wasu.cn/Play/iframe/id/{video_id}',
-            ),
             'www.youtube.com' => array(
                 '#https?://www\.youtube\.com/watch\?v=(?<video_id>[a-z0-9_=\-]+)#i',
                 'https://www.youtube.com/v/{video_id}',
@@ -76,60 +53,50 @@ class Typembed_Plugin implements Typecho_Plugin_Interface{
                 'https://www.youtube.com/embed/{video_id}',
             ),
             'www.bilibili.com' => array(
-                '#https?://www\.bilibili\.com/video/av(?<video_id>\d+)#i',
-                '//static.hdslb.com/miniloader.swf?aid={video_id}&page=1',
-                '//www.bilibili.com/html/player.html?aid={video_id}&page=1',
+                '#https?://www\.bilibili\.com/video/(?:[av|BV]+)(?:(?<video_id1>[a-zA-Z0-9_=\-]+)/(?:index_|\#page=)(?<video_id2>[a-zA-Z0-9_=\-]+)|(?<video_id>[a-zA-Z0-9_=\-]+))#i',
+                '',
+                '//player.bilibili.com/player.html?aid={video_id}&bvid={video_id}&cid=&page=1',
+            ),
+            'v.youku.com' => array(
+                '#https?://v\.youku\.com/v_show/id_(?<video_id>[a-z0-9_=\-]+)#i',
+                '',
+                'https://player.youku.com/embed/{video_id}?client_id=d0b1b77a17cded3b',
+            ),
+            'v.qq.com' => array(
+                '#https?://v\.qq\.com/(?:[a-z0-9_\./]+\?vid=(?<video_id>[a-z0-9_=\-]+)|(?:[a-z0-9/]+)/(?<video_id2>[a-z0-9_=\-]+))#i',
+                '',
+                'https://v.qq.com/iframe/player.html?vid={video_id}',
             ),
             'www.dailymotion.com' => array(
                 '#https?://www\.dailymotion\.com/video/(?<video_id>[a-z0-9_=\-]+)#i',
-                'http://www.dailymotion.com/swf/video/{video_id}',
-                'http://www.dailymotion.com/embed/video/{video_id}',
+                '',
+                'https://www.dailymotion.com/embed/video/{video_id}',
             ),
             'www.acfun.cn' => array(
                 '#https?://www\.acfun\.cn/v/ac(?<video_id>\d+)#i',
-                'http://cdn.aixifan.com/player/ACFlashPlayer.out.swf?type=page&url=http://www.acfun.cn/v/ac{video_id}',
                 '',
+                'https://www.acfun.cn/player/ac{video_id}',
             ),
-            'www.acfun.tv' => array(
-                '#https?://www\.acfun\.tv/v/ac(?<video_id>\d+)#i',
-                'http://cdn.aixifan.com/player/ACFlashPlayer.out.swf?type=page&url=http://www.acfun.tv/v/ac{video_id}',
+            'my.tv.sohu.com' => array(
+                '#https?://my\.tv\.sohu\.com/us/(?:\d+)/(?<video_id>\d+)#i',
                 '',
-            ),
-            'www.le.com' => array(
-                '#https?://(?:[a-z0-9/]+\.)?(?:[le|letv])+\.com/ptv/vplay/(?<video_id>\d+)#i',
-                'http://i7.imgs.letv.com/player/swfPlayer.swf?id={video_id}&autoplay=0',
-                '',
-            ),
-            'www.letv.com' => array(
-                '#https?://(?:[a-z0-9/]+\.)?(?:[le|letv])+\.com/ptv/vplay/(?<video_id>\d+)#i',
-                'http://i7.imgs.letv.com/player/swfPlayer.swf?id={video_id}&autoplay=0',
-                '',
-            ),
-            'v.yinyuetai.com' => array(
-                '#https?://v\.yinyuetai\.com/video/(?<video_id>\d+)#i',
-                'http://player.yinyuetai.com/video/player/{video_id}/v_0.swf',
-                '',
-            ),
-            'v.ku6.com' => array(
-                '#https?://v\.ku6\.com/show/(?<video_id>[a-z0-9\-_\.]+).html#i',
-                'http://player.ku6.com/refer/{video_id}/v.swf',
-                '',
-            ),
-            'www.mgtv.com' => array(
-                '#https?://www\.mgtv\.com/(?:[a-z0-9/]+)/(?<video_id>\d+)\.html#i',
-                'http://player.mgtv.com/mango-tv3-main/MangoTV_3.swf?play_type=1&video_id={video_id}',
-                '',
+                'https://tv.sohu.com/upload/static/share/share_play.html#{video_id}_0_0_9001_0',
             ),
             'www.56.com' => array(
                 '#https?://(?:www\.)?56\.com/[a-z0-9]+/(?:play_album\-aid\-[0-9]+_vid\-(?<video_id>[a-z0-9_=\-]+)|v_(?<video_id2>[a-z0-9_=\-]+))#i',
-                'http://player.56.com/v_{video_id}.swf',
-                'http://www.56.com/iframe/{video_id}',
+                '',
+                'https://www.56.com/iframe/{video_id}',
+            ),
+            'www.wasu.cn' => array(
+                '#https?://www\.wasu\.cn/play/show/id/(?<video_id>\d+)#i',
+                '',
+                'https://www.wasu.cn/Play/iframe/id/{video_id}',
             ),
             // music
             'music.163.com' => array(
                 '#https?://music\.163\.com/\#/song\?id=(?<video_id>\d+)#i',
                 '',
-                'http://music.163.com/outchain/player?type=2&id={video_id}&auto=0&height=90',
+                'https://music.163.com/outchain/player?type=2&id={video_id}&auto=0&height=90',
             ),
         );
         $video_url = $matches['video_url'];
@@ -159,27 +126,19 @@ class Typembed_Plugin implements Typecho_Plugin_Interface{
         }
         if(in_array($site, $is_music)){
             $height = '110px';
-            $_SERVER['HTTP_USER_AGENT'] = 'iphone';
         }
-        if(self::isMobile()){
-            if(in_array($site, $no_html5)){
-                $html = sprintf(
-                    '<div style="width: %2$s; height: %3$spx; overflow: hidden; position: relative;">
-                        <a href="%1$s" title="点击开始播放" target="_blank" style="display: block; margin: 100px auto 0; width: 50px; height: 50px; text-decoration: none; border: 0; position: absolute; left: 50%%; top: 50%%; margin: -25px;">
-                            <div style="width: 0; height: 0; border-top: 25px solid transparent; border-left: 50px solid #FFF; border-bottom: 25px solid transparent;"></div>
-                        </a>
-                    </div>',
-                    $video_url, $width, $height);
-            }else{
-                $url = str_replace('{video_id}', $id, $providers[$site][2]);
-                $html = sprintf(
-                    '<iframe src="%1$s" width="%2$s" height="%3$s" frameborder="0" allowfullscreen="true"></iframe>',
-                    $url, $width, $height);
-            }
-        }else{
-            $url = str_replace('{video_id}', $id, $providers[$site][1]);
+        if($jump_play){
             $html = sprintf(
-                '<embed src="%1$s" allowFullScreen="true" quality="high" width="%2$s" height="%3$s" allowScriptAccess="always" type="application/x-shockwave-flash"></embed>',
+                '<div style="width: %2$s; height: %3$spx; overflow: hidden; position: relative;">
+                    <a href="%1$s" title="点击开始播放" target="_blank" style="display: block; margin: 100px auto 0; width: 50px; height: 50px; text-decoration: none; border: 0; position: absolute; left: 50%%; top: 50%%; margin: -25px;">
+                        <div style="width: 0; height: 0; border-top: 25px solid transparent; border-left: 50px solid #FFF; border-bottom: 25px solid transparent;"></div>
+                    </a>
+                </div>',
+                $video_url, $width, $height);
+        }else{
+            $url = str_replace('{video_id}', $id, $providers[$site][2]);
+            $html = sprintf(
+                '<iframe src="%1$s" width="%2$s" height="%3$s" frameborder="0" allowfullscreen="true"></iframe>',
                 $url, $width, $height);
         }
         return '<div id="typembed" style="background: #333; overflow: hidden; line-height: 0;">'.$html.'</div>';
@@ -216,21 +175,13 @@ class Typembed_Plugin implements Typecho_Plugin_Interface{
         $form->addInput($mobile_width);
         $mobile_height = new Typecho_Widget_Helper_Form_Element_Text('mobile_height', NULL, '250', _t('移动设备播放器高度'));
         $form->addInput($mobile_height);
-        if(in_array(strtolower(md5($typembed_code)), array('dc9beb84559e75df480b70c3f31ff6cb', '6a78fa2523ca58180ede636aa948bc58', '90b82edf68dcb27b4014ed6b751bb2e5', 'cff968058df7dc08c5c54050ee0c3829', '92420638bb657827490783196a0d263c'))){
-            $typembed_code_text = new Typecho_Widget_Helper_Form_Element_Hidden('typembed_code', NULL, '', _t('高级功能激活码'));
-            $form->addInput($typembed_code_text);
-            $jump_play = new Typecho_Widget_Helper_Form_Element_Radio('jump_play', array(
-                1   =>  _t('启用'),
-                0   =>  _t('关闭')
-            ), 0, _t('跳转播放'), _t('手机端不支持H5播放的视频，将跳转到源网站播放'));
-            $form->addInput($jump_play->addRule('enum', _t('必须选择一个模式'), array(0, 1)));
-        }else{
-            $typembed_code_text = new Typecho_Widget_Helper_Form_Element_Text('typembed_code', NULL, '', _t('高级功能激活码'), _t('升级到<a href="http://www.fengziliu.com/typembed.html" target="_blank">最新版本</a>，填入激活码保存后可开启高级功能。<br />
-激活码关注微信公众号“<a href="http://www.rifuyiri.net/wp-content/uploads/2014/08/972e6fb0794d359.jpg" target="_blank">ri-fu-yi-ri</a>”回复“Typembed Code”即可获得～'));
-            $form->addInput($typembed_code_text);
-            $jump_play = new Typecho_Widget_Helper_Form_Element_Hidden('jump_play', NULL, 0);
-            $form->addInput($jump_play->addRule('enum', _t('必须选择一个模式'), array(0, 1)));
-        }
+        $jump_play = new Typecho_Widget_Helper_Form_Element_Radio('jump_play', array(
+            1   =>  _t('启用'),
+            0   =>  _t('关闭')
+        ), 0, _t('跳转播放'), _t('手机端不支持H5播放的视频，将跳转到源网站播放<br /><br /><br />升级到<a href="https://7yper.com/3636" target="_blank">最新版本</a>。关注微信公众号<a href="https://7yper.com/usr/uploads/2014/08/972e6fb0794d359.jpg" target="_blank">Typer</a>。'));
+        $form->addInput($jump_play->addRule('enum', _t('必须选择一个模式'), array(0, 1)));
+        $typembed_code_text = new Typecho_Widget_Helper_Form_Element_Fake('typembed_code', NULL, '', _t('高级功能激活码'), '');
+        $form->addInput($typembed_code_text);
     }
 
     /**
